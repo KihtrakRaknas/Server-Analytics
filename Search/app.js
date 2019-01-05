@@ -58,9 +58,9 @@ window.onload = function() {
 
 document.getElementById("search").addEventListener("input",function(){
   var query = document.getElementById("search").value
+	var tabBody=document.getElementById("propsTable");
+	tabBody.innerHTML = "";
   if(query!=""){
-    var tabBody=document.getElementById("propsTable");
-    tabBody.innerHTML = ""
     var result = fuse.search(query);
     console.log(result);
     for(var item of result){
