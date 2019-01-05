@@ -436,6 +436,7 @@ function settingChanged(){
 		if(obj!=null){
 		objChanged(obj);
 		}
+    $('[data-toggle="tooltip"]').tooltip('hide')
 }
 
 function objChanged(NewObj){
