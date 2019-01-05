@@ -5,7 +5,7 @@ var options = {
 
   scrollZoom: false, // lets us scroll to zoom in and out - works
   showLink: false, // removes the link to edit on plotly - works
-  modeBarButtonsToRemove: ['toImage', 'zoom2d', 'autoScale2d','toggleSpikelines','hoverClosestCartesian','hoverCompareCartesian','select2d','lasso2d'],
+  modeBarButtonsToRemove: ['toImage', 'zoom2d', 'autoScale2d','toggleSpikelines','hoverClosestCartesian','hoverCompareCartesian','select2d','lasso2d','hoverClosestPie'],
   //modeBarButtonsToAdd: ['lasso2d'],
   displayLogo: false, // this one also seems to not work
   displayModeBar: true, //this one does work
@@ -245,7 +245,7 @@ function generateGraphs(){
               console.log(data);
             }
 
-            plotData.push({name:name, data:data, lay:{  yaxis: {title: category.charAt(0).toUpperCase() + category.slice(1),},xaxis: {title: secondcategory.charAt(0).toUpperCase() + secondcategory.slice(1),}}, "options":options,bar:bar})
+            plotData.push({name:name, data:data, lay:{  yaxis: {title: category.charAt(0).toUpperCase() + category.slice(1),},xaxis: {title: secondcategory.charAt(0).toUpperCase() + secondcategory.slice(1),}}, "options":options,bar:bar,secondcategory:secondcategory})
 
 
 
@@ -258,7 +258,7 @@ function generateGraphs(){
   document.getElementById("graphsOut").innerHTML ="";
 
   for(var data of plotData){
-    createPlot(data.name, data.data, data.lay, data.options,data.bar);
+    createPlot(data.name, data.data, data.lay, data.options,data.bar,data.secondcategory);
   }
   setTimeout(window.scrollTo,200,0,scrollPos);
 
@@ -271,7 +271,7 @@ function cleanLogo(){
   }
 }
 
-function createPlot(name, data, lay, options,bar){
+function createPlot(name, data, lay, options,bar, secondcategory){
   var header = document.createElement("DIV");
   header.classList.add("form-inline");
   header.classList.add("text-center");
@@ -282,6 +282,7 @@ function createPlot(name, data, lay, options,bar){
   var title = document.createElement("h3");
   title.classList.add("text-center");
   title.classList.add("display-4");
+  title.classList.add("mr-auto");
   title.innerText = name
   title.style.marginRight = "15px"
   var newId = name+"-title";
@@ -300,11 +301,23 @@ function createPlot(name, data, lay, options,bar){
 
 
   var HTMLval ='<div class="input-group mb-3 align-middle" style="margin:5px!important"><div class="input-group-prepend"><label class="input-group-text" for="displayStyle">Style</label></div><select id="'+name.replace(/</g, "&lt;").replace(/>/g, "&gt;")+'-sel" class="custom-select" onchange="generateGraphs()"><option '+str1+' value="Bar Graph">Bar Graph</option><option '+str2+' value="Box and Wiskers">Box & Wiskers</option></select></div>';
-  titleDiv.classList.add("align-self-end");
   titleDiv.classList.add("d-flex");
+  titleDiv.classList.add("align-middle");
   header.appendChild(titleDiv);
 
   titleDiv.innerHTML = HTMLval;
+
+
+  var btn = document.createElement("BUTTON");
+  btn.classList.add("btn-outline-secondary");
+  btn.classList.add("btn");
+  btn.type = "button"
+  btn.innerText="Show distribution"
+  btn.onclick = distribution;
+  btn.classList.add("d-flex");
+  btn.dataset.val=secondcategory;
+  btn.classList.add("align-middle");
+  header.appendChild(btn);
 
   (document.getElementById("graphsOut")).appendChild(header);
 
@@ -314,5 +327,32 @@ function createPlot(name, data, lay, options,bar){
 
   console.log(div);
   setTimeout(Plotly.newPlot,100,name, data, lay, options);
+
+}
+var propDistribution;
+function distribution(){
+  console.log(event.srcElement.dataset.val)
+  document.getElementById("modTitle").innerText = event.srcElement.dataset.val.charAt(0).toUpperCase()+event.srcElement.dataset.val.slice(1)+ " Distribution";
+  $('#distMod').modal('show')
+  var values=[]
+  var labels=[]
+  for(var propVal of totalArrays[event.srcElement.dataset.val]["vals"]){
+    labels.push(propVal);
+    var count = 0;
+    for(var subobj of obj){
+      if(subobj[event.srcElement.dataset.val]==propVal)
+        count++;
+    }
+    values.push(count);
+  }
+  var data=[{
+    values: values,
+    labels: labels,
+    type: 'pie'
+  }];
+
+  Plotly.newPlot('distModBod', data,{},options);
+
+  setTimeout(cleanLogo,100);
 
 }
