@@ -331,16 +331,16 @@ function createPlot(name, data, lay, options,bar, secondcategory){
 }
 var propDistribution;
 function distribution(){
-  console.log(event.srcElement.dataset.val)
-  document.getElementById("modTitle").innerText = event.srcElement.dataset.val.charAt(0).toUpperCase()+event.srcElement.dataset.val.slice(1)+ " Distribution";
+  console.log(event.target || event.srcElement.dataset.val)
+  document.getElementById("modTitle").innerText = event.target || event.srcElement.dataset.val.charAt(0).toUpperCase()+ event.target || event.srcElement.dataset.val.slice(1)+ " Distribution";
   $('#distMod').modal('show')
   var values=[]
   var labels=[]
-  for(var propVal of totalArrays[event.srcElement.dataset.val]["vals"]){
+  for(var propVal of totalArrays[event.target || event.srcElement.dataset.val]["vals"]){
     labels.push(propVal);
     var count = 0;
     for(var subobj of obj){
-      if(subobj[event.srcElement.dataset.val]==propVal)
+      if(subobj[event.target || event.srcElement.dataset.val]==propVal)
         count++;
     }
     values.push(count);
