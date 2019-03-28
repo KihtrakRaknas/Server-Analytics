@@ -313,7 +313,9 @@ function createPlot(name, data, lay, options,bar, secondcategory){
   btn.classList.add("btn");
   btn.type = "button"
   btn.innerText="Show distribution"
-  btn.onclick = distribution;
+  btn.onclick = function() { 
+    distribution(this) 
+};//;
   btn.classList.add("d-flex");
   btn.dataset.val=secondcategory;
   btn.classList.add("align-middle");
@@ -330,17 +332,21 @@ function createPlot(name, data, lay, options,bar, secondcategory){
 
 }
 var propDistribution;
-function distribution(){
-  console.log(event.target || event.srcElement.dataset.val)
-  document.getElementById("modTitle").innerText = event.target || event.srcElement.dataset.val.charAt(0).toUpperCase()+ event.target || event.srcElement.dataset.val.slice(1)+ " Distribution";
+function distribution(e){
+  var e = window.event || e;
+  var eventTarget = e.srcElement || e;
+  var eventVal = eventTarget.dataset.val;
+  
+  console.log(eventVal)
+  document.getElementById("modTitle").innerText = eventVal.charAt(0).toUpperCase()+eventVal.slice(1)+ " Distribution";
   $('#distMod').modal('show')
   var values=[]
   var labels=[]
-  for(var propVal of totalArrays[event.target || event.srcElement.dataset.val]["vals"]){
+  for(var propVal of totalArrays[eventVal]["vals"]){
     labels.push(propVal);
     var count = 0;
     for(var subobj of obj){
-      if(subobj[event.target || event.srcElement.dataset.val]==propVal)
+      if(subobj[eventVal]==propVal)
         count++;
     }
     values.push(count);
