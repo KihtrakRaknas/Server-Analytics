@@ -287,23 +287,14 @@ function editObj(elem){
 
 		editJSONbox.contentEditable = "true";
 		editJSONbox.style.border ="2px solid rgba(0,0,0,.25)"
+		editJSONbox.style.whiteSpace ="pre"
 		console.log(props);
 		var val=obj;
 		for(var prop of props){
 			val = val[prop]
 		}
 		var txt = JSON.stringify(val, null, "\t");
-		for (var x = 0; x < txt.length; x++)
-		{
-	    var c = txt.charAt(x);
-			if(c=="\t"){
-				editJSONbox.innerText+=txt.substring(0,x);
-				txt=txt.substring(x,txt.length)
-				 x = 0
-				editJSONbox.innerHTML+="&emsp;";
-			}
-		}
-		editJSONbox.innerText+=txt;
+		editJSONbox.innerText=txt;
 		console.log(editJSONbox);
 		parentElem.appendChild(editJSONbox);
 
